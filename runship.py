@@ -5,7 +5,7 @@ import shipunit as u
 import shipRoot_conf
 import rootUtils as ut
 import os
-import shipDet_conf
+import shipDet_conf_exc as shipDet_conf
 import geomGeant4
 import saveBasicParameters
 import checkMagFields
@@ -98,27 +98,15 @@ class SHIPRunner(object):
                                                 muShieldGeo=self.shield_geo_file,
                                                 #CaloDesign=globalDesigns[self.design]['caloDesign'], strawDesign=globalDesigns[self.design]['strawDesign'],
                                                 muShieldStepGeo=self.step_geo, muShieldWithCobaltMagnet=0,
-                                                SC_mag=True, scName=self.sc_name, decayVolumeMed="vacuums")
+                                                SC_mag=True, scName=self.sc_name, decayVolumeMedium="vacuums")
 
         run = ROOT.FairRunSim()
         run.SetName("TGeant4")  # Transport engine
         run.SetUserConfig('g4Config.C')
         run.SetMaterials("media.geo")
         rtdb = run.GetRuntimeDb()
-        from array import array
-        in_params = ROOT.TVectorD(
-                len(ship_geo.muShield.params), array("d", ship_geo.muShield.params)
-            )
-        MuonShield = ROOT.ShipMuonShield(
-                in_params,
-                ship_geo.cave.floorHeightMuonShield,
-                ship_geo.muShieldWithCobaltMagnet,
-                ship_geo.muShieldStepGeo,
-                ship_geo.hadronAbsorber.WithConstField,
-                ship_geo.muShield.WithConstField,
-            )
-        run.AddModule(MuonShield)
-        #modules = shipDet_conf.configure(run, ship_geo)
+
+        modules = shipDet_conf.configure(run, ship_geo)
         primGen = ROOT.FairPrimaryGenerator()
         fileType = ut.checkFileExists(self.input_file)
         if fileType == 'tree': primGen.SetTarget(ship_geo.target.z0+70.845*u.m,0.)

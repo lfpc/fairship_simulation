@@ -93,16 +93,13 @@ class SHIPRunner(object):
 
         ROOT.gRandom.SetSeed(self.theSeed)
         shipRoot_conf.configure(0)
-        '''ship_geo = ConfigRegistry.loadpy("$FAIRSHIP/geometry/geometry_config.py", Yheight = globalDesigns[self.design]['dy'], tankDesign = globalDesigns[self.design]['dv'],
-                                                muShieldDesign = self.shield_design, nuTauTargetDesign=globalDesigns[self.design]['nud'], CaloDesign=globalDesigns[self.design]['caloDesign'],
-                                                strawDesign=globalDesigns[self.design]['strawDesign'], muShieldGeo=self.shield_geo_file,
-                                                muShieldStepGeo=self.step_geo, muShieldWithCobaltMagnet=0,
-                                                SC_mag=True, scName=self.sc_name, decayVolumeMed="vacuums")'''
         ship_geo = ConfigRegistry.loadpy("$FAIRSHIP/geometry/geometry_config.py", Yheight = globalDesigns[self.design]['dy'], tankDesign = globalDesigns[self.design]['dv'],
-                                                muShieldDesign = self.shield_design,
+                                                muShieldDesign = self.shield_design, nuTauTargetDesign=globalDesigns[self.design]['nud'], 
                                                 muShieldGeo=self.shield_geo_file,
-                                                muShieldStepGeo=self.step_geo,
-                                                SC_mag=True, scName=self.sc_name)
+                                                #CaloDesign=globalDesigns[self.design]['caloDesign'], strawDesign=globalDesigns[self.design]['strawDesign'],
+                                                muShieldStepGeo=self.step_geo, muShieldWithCobaltMagnet=0,
+                                                SC_mag=True, scName=self.sc_name, decayVolumeMed="vacuums")
+
         run = ROOT.FairRunSim()
         run.SetName("TGeant4")  # Transport engine
         run.SetUserConfig('g4Config.C')

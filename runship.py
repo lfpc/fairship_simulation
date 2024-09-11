@@ -5,8 +5,8 @@ import shipunit as u
 import shipRoot_conf
 import rootUtils as ut
 import os
-#import shipDet_conf_exc as shipDet_conf
-import shipDet_conf
+import shipDet_conf_exc as shipDet_conf
+#import shipDet_conf
 import geomGeant4
 import saveBasicParameters
 import checkMagFields
@@ -458,7 +458,6 @@ class SHIPRunner(object):
         mygMC.ProcessGeantCommand("/geometry/test/recursion_start 0")
         mygMC.ProcessGeantCommand("/geometry/test/recursion_depth 2")
         mygMC.ProcessGeantCommand("/geometry/test/run")
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

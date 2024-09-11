@@ -48,8 +48,8 @@ globalDesigns = {
 
 class SHIPRunner(object):
     def __init__(self, tag,
+                 input_file,
                  same_seed=False, 
-                 input_file='/afs/cern.ch/user/l/lcattela/SHIP/samples/full_sample.root',
                  output_dir = 'outputs',
                  step_geo=False,
                  shield_design = None, 
@@ -462,7 +462,7 @@ class SHIPRunner(object):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--n", type=int, default=100)
-    parser.add_argument("--file", type=str, default='/afs/cern.ch/user/l/lcattela/SHIP/samples/subsample.root')
+    parser.add_argument("--file", type=str, default='../samples/subsample.root')
     parser.add_argument("--shield_design", type=int, default=None)
     parser.add_argument("--tag", type=str, default='test')
     parser.add_argument("--i", type=int, default=0)

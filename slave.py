@@ -76,6 +76,7 @@ def generate(
     # user configuration file default g4Config.C
     run.SetUserConfig('g4Config.C')
     modules = shipDet_conf.configure(run, ship_geo)
+
     primGen = r.FairPrimaryGenerator()
     primGen.SetTarget(ship_geo.target.z0 + 50 * u.m, 0.)
     MuonBackgen = r.MuonBackGenerator()

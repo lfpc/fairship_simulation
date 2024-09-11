@@ -27,14 +27,7 @@ def process_file(filename, tracker_ends=None, epsilon=1e-9, debug=False,
             mc_pdgs.append(hit.GetPdgCode())
        
         muon_veto_points = defaultdict(list)
-        z = []
-        px = []
-        pz = []
         for hit in event.vetoPoint:
-            if hit.GetTrackID()>=0 and abs(mc_pdgs[hit.GetTrackID()]) == MUON and hit.GetZ()>=-3175:
-                z.append(hit.GetZ())
-                px.append(hit.GetPx())
-                pz.append(hit.GetPz())
             if hit.GetTrackID() >= 0 and\
                 abs(mc_pdgs[hit.GetTrackID()]) == MUON and\
                 tracker_ends[0] - epsilon <= hit.GetZ() <= tracker_ends[1] + epsilon:
@@ -43,10 +36,6 @@ def process_file(filename, tracker_ends=None, epsilon=1e-9, debug=False,
                 hit.Position(pos_begin)
                 
                 muon_veto_points[hit.GetTrackID()].append([pos_begin.X(), pos_begin.Y(),pos_begin.Z(),hit.GetPx(),hit.GetPy(),hit.GetPz(),hit.GetTrackID()])
-        if len(z) > 1: pass        
-            #print('Z VECTOR', z)     
-            #print('PX', px)
-            #print('PZ', pz) 
         for index, hit in enumerate(event.MCTrack):
             if index in muon_veto_points:
                 if debug:

@@ -462,7 +462,7 @@ class SHIPRunner(object):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--n", type=int, default=100)
-    parser.add_argument("--file", type=str, default='../samples/subsample.root')
+    parser.add_argument("--file", type=str, default='./samples/subsample.root')
     parser.add_argument("--shield_design", type=int, default=None)
     parser.add_argument("--tag", type=str, default='test')
     parser.add_argument("--i", type=int, default=0)

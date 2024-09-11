@@ -159,7 +159,7 @@ class SHIPRunner(object):
         t2 = time()
         dt = t2-t1
         print ('Finished simulation of {} events. Time = {}'.format(n_events, dt))
-        print('MODULE', modules)
+        print('MODULE', modules.keys())
         
         kParameterMerged = ROOT.kTRUE
         parOut = ROOT.FairParRootFileIo(kParameterMerged)

@@ -98,7 +98,7 @@ class SHIPRunner(object):
                                                 muShieldGeo=self.shield_geo_file,
                                                 #CaloDesign=globalDesigns[self.design]['caloDesign'], strawDesign=globalDesigns[self.design]['strawDesign'],
                                                 muShieldStepGeo=self.step_geo, muShieldWithCobaltMagnet=0,
-                                                SC_mag=True, scName=self.sc_name, decayVolumeMed="vacuums")
+                                                SC_mag=True, scName=self.sc_name, decayVolumeMedium="vacuums")
 
         run = ROOT.FairRunSim()
         run.SetName("TGeant4")  # Transport engine

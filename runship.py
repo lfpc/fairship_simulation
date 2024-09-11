@@ -130,10 +130,10 @@ class SHIPRunner(object):
         modules['Veto'].SetFollowMuon()
         if fastMuon:
             modules['Veto'].SetFastMuon()
-        exclusionList = ["Muon","Ecal","Hcal","TargetTrackers","NuTauTarget","HighPrecisionTrackers",
-                 "Veto","Magnet","TargetStation","MagneticSpectrometer","EmuMagnet"]
-        for i in exclusionList:
-            modules.pop(i)
+        #exclusionList = ["Muon","Ecal","Hcal","TargetTrackers","NuTauTarget","HighPrecisionTrackers",
+        #         "Veto","Magnet","TargetStation","MagneticSpectrometer","EmuMagnet"]
+        for i in modules:#exclusionList:
+            if i != 'MuonShield': modules.pop(i)
 
         run.SetGenerator(primGen)
 

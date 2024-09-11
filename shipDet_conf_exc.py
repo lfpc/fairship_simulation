@@ -307,10 +307,10 @@ def configure(run, ship_geo):
         configure_veto(
             fairship + "/geometry/veto_config_helium.yaml"
         )  # put conditions for the design
-    if ship_geo.DecayVolumeMedium == "vacuums":
-        configure_veto(
-            fairship + "/geometry/veto_config_vacuums.yaml"
-        )  # put conditions for the design
+    #if ship_geo.DecayVolumeMedium == "vacuums":
+    #    configure_veto(
+    #        fairship + "/geometry/veto_config_vacuums.yaml"
+    #    )  # put conditions for the design
 
     if hasattr(ship_geo, "tauMudet"):  # don't support old designs
         if ship_geo.muShieldDesign >= 7 and hasattr(ship_geo.tauMudet, "Xtot"):

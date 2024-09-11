@@ -5,7 +5,7 @@ import shipunit as u
 import shipRoot_conf
 import rootUtils as ut
 import os
-import shipDet_conf
+import shipDet_conf_exc as shipDet_conf
 import geomGeant4
 import saveBasicParameters
 import checkMagFields
@@ -130,10 +130,6 @@ class SHIPRunner(object):
         modules['Veto'].SetFollowMuon()
         if fastMuon:
             modules['Veto'].SetFastMuon()
-        #exclusionList = ["Muon","Ecal","Hcal","TargetTrackers","NuTauTarget","HighPrecisionTrackers",
-        #         "Veto","Magnet","TargetStation","MagneticSpectrometer","EmuMagnet"]
-        for i in modules:#exclusionList:
-            if i != 'MuonShield': modules.pop(i)
 
         run.SetGenerator(primGen)
 

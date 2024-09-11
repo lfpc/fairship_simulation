@@ -99,9 +99,9 @@ class SHIPRunner(object):
                                                 muShieldStepGeo=self.step_geo, muShieldWithCobaltMagnet=0,
                                                 SC_mag=True, scName=self.sc_name, decayVolumeMed="vacuums")'''
         ship_geo = ConfigRegistry.loadpy("$FAIRSHIP/geometry/geometry_config.py", Yheight = globalDesigns[self.design]['dy'], tankDesign = globalDesigns[self.design]['dv'],
-                                                muShieldDesign = self.shield_design, nuTauTargetDesign=globalDesigns[self.design]['nud'],
+                                                muShieldDesign = self.shield_design,
                                                 muShieldGeo=self.shield_geo_file,
-                                                muShieldStepGeo=self.step_geo, muShieldWithCobaltMagnet=0,
+                                                muShieldStepGeo=self.step_geo,
                                                 SC_mag=True, scName=self.sc_name)
         run = ROOT.FairRunSim()
         run.SetName("TGeant4")  # Transport engine
@@ -117,7 +117,7 @@ class SHIPRunner(object):
 
         MuonBackgen = ROOT.MuonBackGenerator()
         MuonBackgen.Init(self.input_file, first_event, phiRandom)
-        MuonBackgen.SetSmearBeam(5 * u.cm) # radius of ring, thickness 8mm
+        #MuonBackgen.SetSmearBeam(5 * u.cm) # radius of ring, thickness 8mm
         if self.same_seed: MuonBackgen.SetSameSeed(self.same_seed)
 
         primGen.AddGenerator(MuonBackgen)
@@ -178,7 +178,7 @@ class SHIPRunner(object):
         if remove_empty_events: self.remove_empty(output_file)
         if return_time: return run,dt
         else: return run
-    def run_fixed_target(self,n_events,storeOnlyMuons:bool = True, 
+    def run_fixed_target(self,n_events:int,storeOnlyMuons:bool = True, 
                     skipNeutrinos:bool = True,FourDP:bool = False, withEvtGen = True, boostDiMuon = 1., boostFactor = 1.,
                  phiRandom=False, 
                  fastMuon=True, 

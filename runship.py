@@ -263,6 +263,7 @@ class SHIPRunner(object):
         if self.same_seed: MuonBackgen.SetSameSeed(self.same_seed)
 
         primGen.AddGenerator(MuonBackgen)
+
         if not n_events: n_events = MuonBackgen.GetNevents()
         else: n_events = min(n_events, MuonBackgen.GetNevents())
 
@@ -271,15 +272,13 @@ class SHIPRunner(object):
         geofile_output = os.path.join(self.output_dir,f"geometry_ship.MuonBack-TGeant4_{self.tag}.root")
 
         run.SetSink(ROOT.FairRootFileSink(output_file))
-
-        modules['Veto'].SetFollowMuon()
-        if fastMuon:
-            modules['Veto'].SetFastMuon()
+        #modules = shipDet_conf.configure(run, ship_geo)
+        #modules['Veto'].SetFollowMuon()
+        #if fastMuon:
+        #    modules['Veto'].SetFastMuon()
 
         run.SetGenerator(primGen)
-        primGen.AddGenerator(P8gen)
-        #
-        run.SetGenerator(primGen)
+        #primGen.AddGenerator(P8gen)
         # -----Initialize simulation run------------------------------------
         run.Init()
 
@@ -288,8 +287,8 @@ class SHIPRunner(object):
         fStack.SetMinPoints(1)
         fStack.SetEnergyCut(-1.)
         #
-        import AddDiMuonDecayChannelsToG4
-        AddDiMuonDecayChannelsToG4.Initialize(P8gen.GetPythia())
+        #import AddDiMuonDecayChannelsToG4
+        #AddDiMuonDecayChannelsToG4.Initialize(P8gen.GetPythia())
 
         # boost gamma2muon conversion
         if boostFactor > 1:

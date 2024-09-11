@@ -114,7 +114,6 @@ class SHIPRunner(object):
         fileType = ut.checkFileExists(self.input_file)
         if fileType == 'tree': primGen.SetTarget(ship_geo.target.z0+70.845*u.m,0.)
         else: primGen.SetTarget(ship_geo.target.z0+50*u.m,0.)
-        print('TARGETTTTT', ship_geo.target.z0)
 
         MuonBackgen = ROOT.MuonBackGenerator()
         MuonBackgen.Init(self.input_file, first_event, phiRandom)
@@ -162,6 +161,7 @@ class SHIPRunner(object):
         t2 = time()
         dt = t2-t1
         print ('Finished simulation of {} events. Time = {}'.format(n_events, dt))
+        print('TARGETTTTT', ship_geo.target.z0)
         
         kParameterMerged = ROOT.kTRUE
         parOut = ROOT.FairParRootFileIo(kParameterMerged)

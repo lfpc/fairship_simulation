@@ -5,7 +5,8 @@ import shipunit as u
 import shipRoot_conf
 import rootUtils as ut
 import os
-import shipDet_conf_exc as shipDet_conf
+#import shipDet_conf_exc as shipDet_conf
+import shipDet_conf
 import geomGeant4
 import saveBasicParameters
 import checkMagFields

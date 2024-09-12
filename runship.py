@@ -180,6 +180,81 @@ class SHIPRunner(object):
         if return_time: return run,dt
         else: return run
 
+
+        
+    def display(self,ship_geo):
+        trajFilter = ROOT.FairTrajFilter.Instance()
+        trajFilter.SetStepSizeCut(1*u.mm)
+        trajFilter.SetVertexCut(-20*u.m, -20*u.m,ship_geo.target.z0-1*u.m, 20*u.m, 20*u.m, 200.*u.m)
+        trajFilter.SetMomentumCutP(0.1*u.GeV)
+        trajFilter.SetEnergyCut(0., 400.*u.GeV)
+        trajFilter.SetStorePrimaries(ROOT.kTRUE)
+        trajFilter.SetStoreSecondaries(ROOT.kTRUE)
+    @staticmethod
+    def remove_empty(output_file):
+        tmpFile = output_file+"tmp"
+        xxx = output_file.split('/')
+        check = xxx[-1]
+        fin = False
+        for ff in ROOT.gROOT.GetListOfFiles():
+            nm = ff.GetName().split('/')
+            if nm[len(nm)-1] == check: fin = ff
+        if not fin: fin   = ROOT.TFile.Open(output_file)
+        t     = fin.cbmsim
+        fout  = ROOT.TFile(tmpFile,'recreate')
+        fSink = ROOT.FairRootFileSink(fout)
+
+        sTree = t.CloneTree(0)
+        nEvents = 0
+        pointContainers = []
+        for x in sTree.GetListOfBranches():
+            name = x.GetName()
+            if not name.find('Point')<0: pointContainers.append('sTree.'+name+'.GetEntries()') 
+            # makes use of convention that all sensitive detectors fill XXXPoint containers
+        for n in range(t.GetEntries()):
+            rc = t.GetEvent(n)
+            empty = True
+            for x in pointContainers:
+                if eval(x)>0: empty = False
+            if not empty:
+                rc = sTree.Fill()
+                nEvents+=1
+
+        branches = ROOT.TList()
+        branches.SetName('BranchList')
+        branches.Add(ROOT.TObjString('MCTrack'))
+        branches.Add(ROOT.TObjString('vetoPoint'))
+        branches.Add(ROOT.TObjString('ShipRpcPoint'))
+        branches.Add(ROOT.TObjString('TargetPoint'))
+        branches.Add(ROOT.TObjString('TTPoint'))
+        branches.Add(ROOT.TObjString('ScoringPoint'))
+        branches.Add(ROOT.TObjString('strawtubesPoint'))
+        branches.Add(ROOT.TObjString('EcalPoint'))
+        branches.Add(ROOT.TObjString('sEcalPointLite'))
+        branches.Add(ROOT.TObjString('smuonPoint'))
+        branches.Add(ROOT.TObjString('TimeDetPoint'))
+        branches.Add(ROOT.TObjString('MCEventHeader'))
+        branches.Add(ROOT.TObjString('sGeoTracks'))
+
+        sTree.AutoSave()
+        fSink.WriteObject(branches, "BranchList", ROOT.TObject.kSingleKey)
+        fSink.SetOutTree(sTree)
+
+        fout.Close()
+        print("removed empty events, left with:", nEvents)
+        rc1 = os.system("rm  "+output_file)
+        rc2 = os.system("mv "+tmpFile+" "+output_file)
+        fin.SetWritable(False) # bpyass flush error
+    @staticmethod
+    def visualizeMagFields():
+        checkMagFields.run()
+    @staticmethod
+    def checkOverlapsWithGeant4():
+        mygMC = ROOT.TGeant4.GetMC()
+        mygMC.ProcessGeantCommand("/geometry/test/recursion_start 0")
+        mygMC.ProcessGeantCommand("/geometry/test/recursion_depth 2")
+        mygMC.ProcessGeantCommand("/geometry/test/run")
+
 from array import array
 def extract_l_and_w(magnet_geofile, full_geometry_file, run=None):
         run.CreateGeometryFile('outputs/geometry_out.root')

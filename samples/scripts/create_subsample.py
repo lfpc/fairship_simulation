@@ -12,8 +12,8 @@ N = 50000
 root_file = uproot.open("../full_sample.root")
 ntuple = root_file["pythia8-Geant4"]
 ntuple_df = ntuple.arrays(library="pd")
-with gzip.open('../oliver_data_enriched.pkl', 'rb') as f:
-    px,py,pz = pickle.load(f)[:N].T
+#with gzip.open('../oliver_data_enriched.pkl', 'rb') as f:
+#    px,py,pz = pickle.load(f)[:N].T
 ntuple_sample = ntuple_df.sample(n=N, random_state=42).reset_index(drop=True)
 print(ntuple_sample.head())
 #ntuple_sample['px'] = px

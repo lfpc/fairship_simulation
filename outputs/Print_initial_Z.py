@@ -25,6 +25,6 @@ def process_file(filename, tracker_ends=None, epsilon=1e-9, debug=False,
 
 
 if __name__ == '__main__':
-    filename = 'ship_sim.MuonBack-TGeant4_test.root'
+    filename = './ship_sim.MuonBack-TGeant4_test.root'
     muons = process_file(filename,(-math.inf,math.inf))
     print(muons)

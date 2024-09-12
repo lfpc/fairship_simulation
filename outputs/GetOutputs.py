@@ -31,10 +31,8 @@ def process_file(filename, tracker_ends=None, epsilon=1e-9, debug=False,
             if hit.GetTrackID() >= 0 and\
                 abs(mc_pdgs[hit.GetTrackID()]) == MUON and\
                 tracker_ends[0] - epsilon <= hit.GetZ() <= tracker_ends[1] + epsilon:
-                if len(z)>1:continue
                 pos_begin = ROOT.TVector3()
                 hit.Position(pos_begin)
-                
                 muon_veto_points[hit.GetTrackID()].append([pos_begin.X(), pos_begin.Y(),pos_begin.Z(),hit.GetPx(),hit.GetPy(),hit.GetPz(),hit.GetTrackID()])
         for index, hit in enumerate(event.MCTrack):
             if index in muon_veto_points:
@@ -62,6 +60,6 @@ def process_file(filename, tracker_ends=None, epsilon=1e-9, debug=False,
 
 if __name__ == '__main__':
     filename = 'ship_sim.MuonBack-TGeant4_test.root'
-    muons = process_file(filename,(-3180,9090))
+    muons = process_file(filename,(-math.inf,math.inf))
     with gzip.open(f'outputs_fairship.pkl', "wb") as f:
         pickle.dump(muons, f)

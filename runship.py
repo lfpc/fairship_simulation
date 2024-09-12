@@ -127,9 +127,9 @@ class SHIPRunner(object):
 
         run.SetSink(ROOT.FairRootFileSink(output_file))
 
-        #modules['Veto'].SetFollowMuon()
-        #if fastMuon:
-        #    modules['Veto'].SetFastMuon()
+        modules['Veto'].SetFollowMuon()
+        if fastMuon:
+            modules['Veto'].SetFastMuon()
 
         run.SetGenerator(primGen)
 

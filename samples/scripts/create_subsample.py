@@ -32,8 +32,8 @@ for column in ntuple_sample.columns:
 for i in range(len(ntuple_sample)):
     for column in ntuple_sample.columns:
         if column in ['z','oz']:
-                value = -50. #-48.5
-        elif column in ['x','y','ox','oy','px','py','opx','opy']:
+                value = -48.5
+        elif column in ['x','y','ox','oy']:
                 value = 0.0
         else: value = ntuple_sample[column].iloc[i]
         branches[column][0] = value

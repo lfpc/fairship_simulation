@@ -137,11 +137,11 @@ class SHIPRunner(object):
         else:run.SetStoreTraj(ROOT.kFALSE)
         run.Init()
 
-        gMC = ROOT.TVirtualMC.GetMC()
-        fStack = gMC.GetStack()
-        if self.hits_only:
-            fStack.SetMinPoints(1)
-            fStack.SetEnergyCut(-100.*u.MeV)
+        #gMC = ROOT.TVirtualMC.GetMC()
+        #fStack = gMC.GetStack()
+        #if self.hits_only:
+        #    fStack.SetMinPoints(1)
+        #    fStack.SetEnergyCut(-100.*u.MeV)
 
         if display:
             self.display(ship_geo)
@@ -158,7 +158,6 @@ class SHIPRunner(object):
         t2 = time()
         dt = t2-t1
         print ('Finished simulation of {} events. Time = {}'.format(n_events, dt))
-        print('MODULE', modules.keys())
         
         kParameterMerged = ROOT.kTRUE
         parOut = ROOT.FairParRootFileIo(kParameterMerged)

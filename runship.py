@@ -55,9 +55,10 @@ class SHIPRunner(object):
                  shield_design = None, 
                  design = '2023',
                  MCTracksWithHitsOnly = True,  # copy particles which produced a hit and their history
-                 shield_geofile = None, 
+                 shield_geofile = 'magnet_geo.root', 
                  seed:int = 1,
-                 sc_name = 'sc_v6'):
+                 sc_name = 'sc_v6',
+                 only_muonshield:bool = True):
 
         if shield_design is None: shield_design = globalDesigns[design]['ds']
         self.shield_design = shield_design
@@ -77,6 +78,10 @@ class SHIPRunner(object):
         self.hits_only = MCTracksWithHitsOnly
         self.tag = tag
         self.sc_name = sc_name
+
+        self.only_muonshield = only_muonshield
+
+
     def run_ship(self, n_events=0, 
                  phiRandom=False, 
                  fastMuon=True, 
@@ -105,8 +110,8 @@ class SHIPRunner(object):
         run.SetUserConfig('g4Config.C')
         run.SetMaterials("media.geo")
         rtdb = run.GetRuntimeDb()
-
-        modules = shipDet_conf.configure(run, ship_geo)
+        exclusion_list = shipDet_conf.LIST_WITHOUT_MUONSHIELD if self.only_muonshield else []
+        modules = shipDet_conf.configure(run, ship_geo, exclusion_list = exclusion_list)
         primGen = ROOT.FairPrimaryGenerator()
         fileType = ut.checkFileExists(self.input_file)
         if fileType == 'tree': primGen.SetTarget(ship_geo.target.z0+70.845*u.m,0.)
@@ -457,6 +462,36 @@ class SHIPRunner(object):
         mygMC.ProcessGeantCommand("/geometry/test/recursion_depth 2")
         mygMC.ProcessGeantCommand("/geometry/test/run")
 
+from array import array
+def extract_l_and_w(magnet_geofile, full_geometry_file, run=None):
+        run.CreateGeometryFile('outputs/geometry_out.root')
+        sGeo = ROOT.gGeoManager
+        muonShield = sGeo.GetVolume('MuonShieldArea')
+        g = ROOT.TFile.Open(os.path.join(self.geometry_dir, magnet_geofile), 'read')
+        params = g.Get("params")
+        f = ROOT.TFile.Open(os.path.join(self.geometry_dir, full_geometry_file), 'update')
+        f.cd()
+        length = ROOT.TVectorD(1, array('d', [L]))
+        length.Write('length')
+        weight = ROOT.TVectorD(1, array('d', [W]))
+        weight.Write('weight')
+        params.Write("params")
+
+        # Extract coordinates of senstive plane
+        nav = r.gGeoManager.GetCurrentNavigator()
+        nav.cd("sentsitive_tracker_1")
+        tmp = nav.GetCurrentNode().GetVolume().GetShape()
+        o = [tmp.GetOrigin()[0], tmp.GetOrigin()[1], tmp.GetOrigin()[2]]
+        local = array('d', o)
+        globOrigin = array('d', [0, 0, 0])
+        nav.LocalToMaster(local, globOrigin)
+
+        sensitive_plane = sGeo.GetVolume('sentsitive_tracker')
+
+        left_end, right_end = globOrigin[2] - sensitive_plane.GetShape().GetDZ(),\
+                              globOrigin[2] + sensitive_plane.GetShape().GetDZ()
+        return L, W, (left_end, right_end)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--n", type=int, default=100)
@@ -465,9 +500,10 @@ if __name__ == '__main__':
     parser.add_argument("--tag", type=str, default='test')
     parser.add_argument("--i", type=int, default=0)
     parser.add_argument("--sameSeed", action='store_true')
+    parser.add_argument("--full_geometry", dest = 'only_muonshield',action='store_false')
     parser.add_argument("--seed", type=int, default=1)
     parser.add_argument("--keep_empty",dest='remove_empty', action='store_false')
     args = parser.parse_args()
-    ship = SHIPRunner(args.tag,input_file = args.file,shield_design=args.shield_design,seed = args.seed, same_seed = args.sameSeed)
+    ship = SHIPRunner(args.tag,input_file = args.file,shield_design=args.shield_design,seed = args.seed, same_seed = args.sameSeed, only_muonshield= args.only_muonshield)
     _,d_time = ship.run_ship(args.n,first_event = args.i,return_time=True,plot_field=False, remove_empty_events=args.remove_empty)
     

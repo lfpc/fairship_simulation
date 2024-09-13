@@ -180,6 +180,101 @@ class SHIPRunner(object):
         if return_time: return run,dt
         else: return run
 
+    def run_muon_shield(self,n_events=0, 
+                 phiRandom=False, 
+                 fastMuon=True, 
+                 first_event=0, 
+                 display = False, 
+                 plot_field = False,
+                 remove_empty_events = True,
+                 return_time = False):
+        ROOT.gRandom.SetSeed(self.theSeed)
+        shipRoot_conf.configure(0)
+        ship_geo = ConfigRegistry.loadpy("$FAIRSHIP/geometry/geometry_config.py", Yheight = globalDesigns[self.design]['dy'], tankDesign = globalDesigns[self.design]['dv'],
+                                                muShieldDesign = self.shield_design, nuTauTargetDesign=globalDesigns[self.design]['nud'], 
+                                                muShieldGeo=self.shield_geo_file,
+                                                #CaloDesign=globalDesigns[self.design]['caloDesign'], strawDesign=globalDesigns[self.design]['strawDesign'],
+                                                muShieldStepGeo=self.step_geo, muShieldWithCobaltMagnet=0,
+                                                SC_mag=True, scName=self.sc_name, decayVolumeMedium="vacuums")
+
+        run = ROOT.FairRunSim()
+        run.SetName("TGeant4")  # Transport engine
+        run.SetUserConfig('g4Config.C')
+        #run.SetMaterials("media.geo")
+        rtdb = run.GetRuntimeDb()
+        exclusion_list = shipDet_conf.LIST_WITHOUT_MUONSHIELD if self.only_muonshield else []
+        #exclusion_list.append('Veto')
+        modules = shipDet_conf.configure(run, ship_geo, exclusionList = exclusion_list)
+        primGen = ROOT.FairPrimaryGenerator()
+        fileType = ut.checkFileExists(self.input_file)
+        if fileType == 'tree': primGen.SetTarget(ship_geo.target.z0+70.845*u.m,0.)
+        else: primGen.SetTarget(ship_geo.target.z0+50*u.m,0.)
+
+        MuonBackgen = ROOT.MuonBackGenerator()
+        MuonBackgen.Init(self.input_file, first_event, phiRandom)
+        #MuonBackgen.SetSmearBeam(5 * u.cm) # radius of ring, thickness 8mm
+        if self.same_seed: MuonBackgen.SetSameSeed(self.same_seed)
+
+        primGen.AddGenerator(MuonBackgen)
+        if not n_events: n_events = MuonBackgen.GetNevents()
+        else: n_events = min(n_events, MuonBackgen.GetNevents())
+
+        output_file = os.path.join(self.output_dir, f"ship_sim.MuonBack-TGeant4_{self.tag}.root")
+        param_file = os.path.join(self.output_dir, f"params_ship.MuonBack-TGeant4_{self.tag}.root")
+        geofile_output = os.path.join(self.output_dir,f"geometry_ship.MuonBack-TGeant4_{self.tag}.root")
+
+        run.SetSink(ROOT.FairRootFileSink(output_file))
+
+        modules['Veto'].SetFollowMuon()
+        if fastMuon:
+            modules['Veto'].SetFastMuon()
+
+        run.SetGenerator(primGen)
+
+        if display: run.SetStoreTraj(ROOT.kTRUE)
+        else:run.SetStoreTraj(ROOT.kFALSE)
+        run.Init()
+
+        #gMC = ROOT.TVirtualMC.GetMC()
+        #fStack = gMC.GetStack()
+        #if self.hits_only:
+        #    fStack.SetMinPoints(1)
+        #    fStack.SetEnergyCut(-100.*u.MeV)
+
+        if display:
+            self.display(ship_geo)
+            
+        if hasattr(ship_geo.Bfield, "fieldMap"):
+            fieldMaker = geomGeant4.addVMCFields(ship_geo, '', True)
+        if plot_field:    
+            fieldMaker.plotField(1, ROOT.TVector3(-9000.0, 6000.0, 50.0), ROOT.TVector3(-300.0, 300.0, 6.0), os.path.join(self.output_dir, 'Bzx.png'))
+            fieldMaker.plotField(2, ROOT.TVector3(-9000.0, 6000.0, 50.0), ROOT.TVector3(-400.0, 400.0, 6.0), os.path.join(self.output_dir, 'Bzy.png'))
+
+        print ('Start run of {} events.'.format(n_events))
+        t1 = time()
+        run.Run(n_events)
+        t2 = time()
+        dt = t2-t1
+        print ('Finished simulation of {} events. Time = {}'.format(n_events, dt))
+        
+        kParameterMerged = ROOT.kTRUE
+        parOut = ROOT.FairParRootFileIo(kParameterMerged)
+        parOut.open(param_file)
+        rtdb.setOutput(parOut)
+        rtdb.saveOutput()
+        rtdb.printParamContexts()
+        getattr(rtdb,"print")()
+        run.CreateGeometryFile(geofile_output)
+        saveBasicParameters.execute(geofile_output,ship_geo)
+        print("Output file is ",  output_file)
+        print("Parameter file is ",param_file)
+
+        if remove_empty_events: self.remove_empty(output_file)
+        if return_time: return run,dt
+        else: return run
+        
+
+
 
         
     def display(self,ship_geo):

@@ -1,11 +1,9 @@
 import numpy as np
 from collections import defaultdict
-import math
-import sys
 import ROOT
-import os
 import gzip
 import pickle
+import shipunit as u
 
 def process_file(filename, tracker_ends=None, epsilon=1e-9, debug=False,
                  apply_acceptance_cut=False):
@@ -57,6 +55,8 @@ def process_file(filename, tracker_ends=None, epsilon=1e-9, debug=False,
     print("Stopped muons: {}".format(empty_hits))
     print("Total events returned: {}".format(len(muons_stats)))
     return np.array(muons_stats)
+
+
 
 if __name__ == '__main__':
     filename = 'ship_sim.MuonBack-TGeant4_test.root'

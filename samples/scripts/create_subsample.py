@@ -2,11 +2,13 @@ import uproot
 import numpy as np
 import argparse
 import ROOT
+from os import getenv
+PROJECTS_DIR = getenv("PROJECTS_DIR")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--N", type=int,default = 50000)
-parser.add_argument("--f", type=str, default = "~/projects/fairship_simulation/samples/full_sample.root")
-parser.add_argument("--o", type=str, default = "~/projects/fairship_simulation/samples/subsample.root")
+parser.add_argument("--f", type=str, default = f"{PROJECTS_DIR}/fairship_simulation/samples/full_sample.root")
+parser.add_argument("--o", type=str, default = f"{PROJECTS_DIR}/fairship_simulation/samples/subsample.root")
 parser.add_argument("--x", type=float,default = None)
 parser.add_argument("--y", type=float,default = None)
 parser.add_argument("--z", type=float,default = None)

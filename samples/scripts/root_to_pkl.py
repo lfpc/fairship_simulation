@@ -10,10 +10,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--f", type=str, default = f"{PROJECTS_DIR}/fairship_simulation/samples/subsample.root")
 parser.add_argument("--o", type=str, default = f"{PROJECTS_DIR}/fairship_simulation/samples/subsample.pkl")
 args = parser.parse_args()
-file_name = '../subsample.root'
 
-def main(file,pkl_file_path):
-    file = uproot.open(file_name)
+def main(input_file,pkl_file_path):
+    file = uproot.open(input_file)
     keys = file.keys()
     ntuple_name = keys[0]
     ntuple = file[ntuple_name]

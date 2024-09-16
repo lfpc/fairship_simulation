@@ -58,7 +58,8 @@ class SHIPRunner(object):
                  shield_geofile = 'magnet_geo.root', 
                  seed:int = 1,
                  sc_name = 'sc_v6',
-                 only_muonshield:bool = True):
+                 only_muonshield:bool = True,
+                 veto = True):
 
         if shield_design is None: shield_design = globalDesigns[design]['ds']
         self.shield_design = shield_design
@@ -80,6 +81,7 @@ class SHIPRunner(object):
         self.sc_name = sc_name
 
         self.only_muonshield = only_muonshield
+        self.veto =veto
 
 
     def run_ship(self, n_events=0, 
@@ -109,8 +111,9 @@ class SHIPRunner(object):
         run.SetName("TGeant4")  # Transport engine
         run.SetUserConfig('g4Config.C')
         run.SetMaterials("media.geo")
-        rtdb = run.GetRuntimeDb()
+        #rtdb = run.GetRuntimeDb()
         exclusion_list = shipDet_conf.LIST_WITHOUT_MUONSHIELD if self.only_muonshield else []
+        exclusion_list.append('Veto')
         modules = shipDet_conf.configure(run, ship_geo, exclusionList = exclusion_list)
         primGen = ROOT.FairPrimaryGenerator()
         fileType = ut.checkFileExists(self.input_file)
@@ -132,9 +135,10 @@ class SHIPRunner(object):
 
         run.SetSink(ROOT.FairRootFileSink(output_file))
 
-        modules['Veto'].SetFollowMuon()
-        if fastMuon:
-            modules['Veto'].SetFastMuon()
+        if self.veto:
+            modules['Veto'].SetFollowMuon()
+            if fastMuon:
+                modules['Veto'].SetFastMuon()
 
         run.SetGenerator(primGen)
 
@@ -165,12 +169,13 @@ class SHIPRunner(object):
         print ('Finished simulation of {} events. Time = {}'.format(n_events, dt))
         
         kParameterMerged = ROOT.kTRUE
-        parOut = ROOT.FairParRootFileIo(kParameterMerged)
-        parOut.open(param_file)
-        rtdb.setOutput(parOut)
-        rtdb.saveOutput()
-        rtdb.printParamContexts()
-        getattr(rtdb,"print")()
+        
+        #parOut = ROOT.FairParRootFileIo(kParameterMerged)
+        #parOut.open(param_file)
+        #rtdb.setOutput(parOut)
+        #rtdb.saveOutput()
+        #rtdb.printParamContexts()
+        #getattr(rtdb,"print")()
         run.CreateGeometryFile(geofile_output)
         saveBasicParameters.execute(geofile_output,ship_geo)
         print("Output file is ",  output_file)
@@ -366,7 +371,7 @@ def extract_l_and_w(magnet_geofile, full_geometry_file, run=None):
         params.Write("params")
 
         # Extract coordinates of senstive plane
-        nav = r.gGeoManager.GetCurrentNavigator()
+        nav = ROOT.gGeoManager.GetCurrentNavigator()
         nav.cd("sentsitive_tracker_1")
         tmp = nav.GetCurrentNode().GetVolume().GetShape()
         o = [tmp.GetOrigin()[0], tmp.GetOrigin()[1], tmp.GetOrigin()[2]]
@@ -389,9 +394,11 @@ if __name__ == '__main__':
     parser.add_argument("--i", type=int, default=0)
     parser.add_argument("--sameSeed", action='store_true')
     parser.add_argument("--full_geometry", dest = 'only_muonshield',action='store_false')
+    parser.add_argument("--remove_veto", dest = 'veto',action='store_false')
     parser.add_argument("--seed", type=int, default=1)
     parser.add_argument("--keep_empty",dest='remove_empty', action='store_false')
     args = parser.parse_args()
-    ship = SHIPRunner(args.tag,input_file = args.file,shield_design=args.shield_design,seed = args.seed, same_seed = args.sameSeed, only_muonshield= args.only_muonshield)
+    ship = SHIPRunner(args.tag,input_file = args.file,shield_design=args.shield_design,
+                      seed = args.seed, same_seed = args.sameSeed, only_muonshield= args.only_muonshield, veto = args.veto)
     _,d_time = ship.run_ship(args.n,first_event = args.i,return_time=True,plot_field=False, remove_empty_events=args.remove_empty)
     

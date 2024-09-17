@@ -59,7 +59,7 @@ def process_file(filename, tracker_ends=None, epsilon=1e-9, debug=False,
 
 
 if __name__ == '__main__':
-    filename = 'ship_sim.MuonBack-TGeant4_test.root'
+    filename = '/afs/cern.ch/user/l/lcattela/SHIP/fairship_simulation/outputs/ship_sim.MuonBack-TGeant4_test.root'
     muons = process_file(filename,(-3161.0000,-3159.0000))
-    with gzip.open(f'outputs_fairship.pkl', "wb") as f:
+    with gzip.open(f'/afs/cern.ch/user/l/lcattela/SHIP/fairship_simulation/outputs/outputs_fairship.pkl', "wb") as f:
         pickle.dump(muons, f)

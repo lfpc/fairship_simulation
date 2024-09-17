@@ -113,7 +113,7 @@ class SHIPRunner(object):
         run.SetMaterials("media.geo")
         #rtdb = run.GetRuntimeDb()
         exclusion_list = shipDet_conf.LIST_WITHOUT_MUONSHIELD if self.only_muonshield else []
-        exclusion_list.append('Veto')
+        if self.veto: exclusion_list.append('Veto')
         modules = shipDet_conf.configure(run, ship_geo, exclusionList = exclusion_list)
         primGen = ROOT.FairPrimaryGenerator()
         fileType = ut.checkFileExists(self.input_file)

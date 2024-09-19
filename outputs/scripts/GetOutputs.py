@@ -31,7 +31,7 @@ def process_file(filename, tracker_ends=None, epsilon=1e-9, debug=False,
                 tracker_ends[0] - epsilon <= hit.GetZ() <= tracker_ends[1] + epsilon:
                 pos_begin = ROOT.TVector3()
                 hit.Position(pos_begin)
-                muon_veto_points[hit.GetTrackID()].append([pos_begin.X(), pos_begin.Y(),pos_begin.Z(),hit.GetPx(),hit.GetPy(),hit.GetPz(),hit.GetTrackID()])
+                muon_veto_points[hit.GetTrackID()].append([pos_begin.X(), pos_begin.Y(),pos_begin.Z(),hit.GetPx(),hit.GetPy(),hit.GetPz()])
         for index, hit in enumerate(event.MCTrack):
             if index in muon_veto_points:
                 if debug:

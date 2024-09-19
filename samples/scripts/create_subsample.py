@@ -7,7 +7,7 @@ PROJECTS_DIR = getenv("PROJECTS_DIR")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--N", type=int,default = 50000)
-parser.add_argument("--f", type=str, default = f"{PROJECTS_DIR}/fairship_simulation/samples/full_sample.root")
+parser.add_argument("--f", type=str, default = f"{PROJECTS_DIR}/fairship_simulation/samples/oliver_sample.root")
 parser.add_argument("--o", type=str, default = f"{PROJECTS_DIR}/fairship_simulation/samples/subsample.root")
 parser.add_argument("--x", type=float,default = None)
 parser.add_argument("--y", type=float,default = None)

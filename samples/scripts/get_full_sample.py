@@ -30,7 +30,7 @@ if __name__ == '__main__':
     start_str = 'pythia8_Geant4_10.0_withCharmandBeauty'
     end_str = '_mu.root'
     for file_name in os.listdir(input_dir):
-        if not file_name.startswith(start_str) and file_name.endswith(end_str): continue
+        if not (file_name.startswith(start_str) and file_name.endswith(end_str)): continue
         num_file = file_name[len(start_str):-len(end_str)]
         print(f'Checking file {num_file}')
         data = main(os.path.join(input_dir,file_name))

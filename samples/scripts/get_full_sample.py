@@ -32,6 +32,7 @@ if __name__ == '__main__':
     for file_name in os.listdir(input_dir):
         if not (file_name.startswith(start_str) and file_name.endswith(end_str)): continue
         num_file = file_name[len(start_str):-len(end_str)]
+        if os.path.isfile(os.path.join(output_dir,output_name.replace('*',num_file))):continue
         print(f'Checking file {num_file}')
         data = main(os.path.join(input_dir,file_name))
         print('DATA SHAPE:', data.shape)

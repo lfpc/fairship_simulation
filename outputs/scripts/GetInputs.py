@@ -46,7 +46,7 @@ def process_file(filename, tracker_ends=None, epsilon=1e-9, debug=False,
                     hit.GetStartZ(),
                     hit.GetPdgCode()
                 ]
-                muons_stats.append(muon + muon_veto_points[index][0])
+                muons_stats.append(muon)
                 if len(muon_veto_points[index]) > 1:
                     events_with_more_than_two_hits_per_mc += 1
                     continue
@@ -61,5 +61,5 @@ def process_file(filename, tracker_ends=None, epsilon=1e-9, debug=False,
 if __name__ == '__main__':
     filename = '/afs/cern.ch/user/l/lcattela/SHIP/fairship_simulation/outputs/ship_sim.MuonBack-TGeant4_test.root'
     muons = process_file(filename,(-3170.0000,-3168.0000))
-    with gzip.open(f'/afs/cern.ch/user/l/lcattela/SHIP/fairship_simulation/outputs/outputs_fairship.pkl', "wb") as f:
+    with gzip.open(f'/afs/cern.ch/user/l/lcattela/SHIP/fairship_simulation/outputs/inputs_fairship.pkl', "wb") as f:
         pickle.dump(muons, f)

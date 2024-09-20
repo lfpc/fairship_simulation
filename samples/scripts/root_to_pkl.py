@@ -17,7 +17,7 @@ def main(input_file,pkl_file_path):
     ntuple_name = keys[0]
     ntuple = file[ntuple_name]
     df = ntuple.arrays(library="pd")
-    charge = df['id']/13.
+    charge = df['id']/(-13.)
     df.drop(['opx','opy','opz','ox','oy','oz','id','pythiaid','parentid','w','ecut'],axis=1,inplace = True)
     df['charge'] = charge
     np_matrix = df.to_numpy()

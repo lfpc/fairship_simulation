@@ -41,10 +41,10 @@ def process_file(filename, tracker_ends=None, epsilon=1e-9, debug=False,
                     hit.GetPx(),
                     hit.GetPy(),
                     hit.GetPz(),
-                    hit.GetStartX(),
-                    hit.GetStartY(),
-                    hit.GetStartZ(),
-                    hit.GetPdgCode()
+                    hit.GetStartX()/100,
+                    hit.GetStartY()/100,
+                    (hit.GetStartZ()+5732.0000)/100,
+                    hit.GetPdgCode()/(-13)
                 ]
                 muons_stats.append(muon)
                 if len(muon_veto_points[index]) > 1:

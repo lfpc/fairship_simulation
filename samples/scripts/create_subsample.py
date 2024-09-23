@@ -41,7 +41,7 @@ def main(input, N:int, output):
     for i in range(len(ntuple_sample)):
         for column in ntuple_sample.columns:
             if column in ['z','oz'] and args.z is not None:
-                value = args.z #-48.5
+                value = -48.5
             elif column in ['x','ox',] and args.x is not None:
                 value = args.x
             elif column in ['y','oy'] and args.y is not None:

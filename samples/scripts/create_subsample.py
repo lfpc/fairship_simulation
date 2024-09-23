@@ -46,7 +46,7 @@ def main(input, N:int, output):
                 value = args.x
             elif column in ['y','oy'] and args.y is not None:
                 value = args.y
-            if column in ['pz','opz'] and args.enriched:
+            elif column in ['pz','opz'] and args.enriched:
                 value = pz[i]
             elif column in ['px','opx',] and args.enriched:
                 value = px[i]

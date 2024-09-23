@@ -20,6 +20,7 @@ def main(input_file,pkl_file_path):
     charge = df['id']/(-13.)
     df.drop(['opx','opy','opz','ox','oy','oz','id','pythiaid','parentid','w','ecut'],axis=1,inplace = True)
     df['charge'] = charge
+    
     np_matrix = df.to_numpy()
     with gzip.open(pkl_file_path, "wb") as f:
         pickle.dump(np_matrix, f)

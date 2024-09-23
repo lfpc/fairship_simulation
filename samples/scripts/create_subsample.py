@@ -2,6 +2,9 @@ import uproot
 import numpy as np
 import argparse
 import ROOT
+import gzip
+import pickle
+
 from os import getenv
 PROJECTS_DIR = getenv("PROJECTS_DIR")
 
@@ -12,14 +15,16 @@ parser.add_argument("--o", type=str, default = f"{PROJECTS_DIR}/fairship_simulat
 parser.add_argument("--x", type=float,default = None)
 parser.add_argument("--y", type=float,default = None)
 parser.add_argument("--z", type=float,default = None)
+parser.add_argument("-enriched", action='store_true')
 args = parser.parse_args()
 
 def main(input, N:int, output):
     root_file = uproot.open(input)
     ntuple = root_file["pythia8-Geant4"]
     ntuple_df = ntuple.arrays(library="pd")
-    #with gzip.open('../oliver_data_enriched.pkl', 'rb') as f:
-    #    px,py,pz = pickle.load(f)[:N].T
+    if args.enriched:
+        with gzip.open('../oliver_data_enriched.pkl', 'rb') as f:
+            px,py,pz = pickle.load(f)[:N].T
     ntuple_sample = ntuple_df.sample(n=N, random_state=42).reset_index(drop=True)
     #ntuple_sample['px'] = px
     #ntuple_sample['py'] = py
@@ -41,6 +46,12 @@ def main(input, N:int, output):
                 value = args.x
             elif column in ['y','oy'] and args.y is not None:
                 value = args.y
+            if column in ['pz','opz'] and args.enriched:
+                value = pz[i]
+            elif column in ['px','opx',] and args.enriched:
+                value = px[i]
+            elif column in ['py','opy'] and args.enriched:
+                value = py[i]
             else: value = ntuple_sample[column].iloc[i]
             branches[column][0] = value
         new_ntuple.Fill()

@@ -24,7 +24,7 @@ def main(input, N:int, output):
     ntuple_df = ntuple.arrays(library="pd")
     if args.enriched:
         with gzip.open('../oliver_data_enriched.pkl', 'rb') as f:
-            px,py,pz = pickle.load(f)[:N].T
+            px,py,pz = pickle.load(f).T
     ntuple_sample = ntuple_df.sample(n=N, random_state=42).reset_index(drop=True)
     #ntuple_sample['px'] = px
     #ntuple_sample['py'] = py
@@ -40,7 +40,7 @@ def main(input, N:int, output):
         new_ntuple.Branch(column, branches[column], f"{column}/{branches[column].dtype.char.upper()}")
     for i in range(len(ntuple_sample)):
         for column in ntuple_sample.columns:
-            if column in ['z','oz'] and args.z is not None:
+            if column in ['z','oz']:# and args.z is not None:
                 value = -48.5
             elif column in ['x','ox',] and args.x is not None:
                 value = args.x

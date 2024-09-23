@@ -40,8 +40,8 @@ def main(input, N:int, output):
         new_ntuple.Branch(column, branches[column], f"{column}/{branches[column].dtype.char.upper()}")
     for i in range(len(ntuple_sample)):
         for column in ntuple_sample.columns:
-            if column in ['z','oz']:# and args.z is not None:
-                value = -48.5
+            if column in ['z','oz'] and args.z is not None:
+                value = args.z
             elif column in ['x','ox',] and args.x is not None:
                 value = args.x
             elif column in ['y','oy'] and args.y is not None:

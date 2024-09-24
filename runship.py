@@ -100,10 +100,10 @@ class SHIPRunner(object):
 
         ROOT.gRandom.SetSeed(self.theSeed)
         shipRoot_conf.configure(0)
-        ship_geo = ConfigRegistry.loadpy("$FAIRSHIP/geometry/geometry_config.py", Yheight = globalDesigns[self.design]['dy'],# tankDesign = globalDesigns[self.design]['dv'],
-                                                muShieldDesign = self.shield_design,# nuTauTargetDesign=globalDesigns[self.design]['nud'], 
+        ship_geo = ConfigRegistry.loadpy("$FAIRSHIP/geometry/geometry_config.py", Yheight = globalDesigns[self.design]['dy'], tankDesign = globalDesigns[self.design]['dv'],
+                                                muShieldDesign = self.shield_design, nuTauTargetDesign=globalDesigns[self.design]['nud'], 
                                                 muShieldGeo=self.shield_geo_file,
-                                                #CaloDesign=globalDesigns[self.design]['caloDesign'], strawDesign=globalDesigns[self.design]['strawDesign'],
+                                                CaloDesign=globalDesigns[self.design]['caloDesign'], strawDesign=globalDesigns[self.design]['strawDesign'],
                                                 muShieldStepGeo=self.step_geo, muShieldWithCobaltMagnet=0,
                                                 SC_mag=True, scName=self.sc_name, decayVolumeMedium="vacuums")
 
@@ -155,9 +155,8 @@ class SHIPRunner(object):
         if display:
             self.display(ship_geo)
             
-        if False:#hasattr(ship_geo.Bfield, "fieldMap"):
-            fieldMaker = geomGeant4.addVMCFields(ship_geo, '', True)
-        if plot_field:    
+        if hasattr(ship_geo.Bfield, "fieldMap") and plot_field:
+            fieldMaker = geomGeant4.addVMCFields(ship_geo, '', True) 
             fieldMaker.plotField(1, ROOT.TVector3(-9000.0, 6000.0, 50.0), ROOT.TVector3(-300.0, 300.0, 6.0), os.path.join(self.output_dir, 'Bzx.png'))
             fieldMaker.plotField(2, ROOT.TVector3(-9000.0, 6000.0, 50.0), ROOT.TVector3(-400.0, 400.0, 6.0), os.path.join(self.output_dir, 'Bzy.png'))
 

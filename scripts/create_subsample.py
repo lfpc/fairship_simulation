@@ -23,7 +23,7 @@ def main(input, N:int, output):
     ntuple = root_file["pythia8-Geant4"]
     ntuple_df = ntuple.arrays(library="pd")
     if args.enriched:
-        with gzip.open('../oliver_data_enriched.pkl', 'rb') as f:
+        with gzip.open('../samples/oliver_data_enriched.pkl', 'rb') as f:
             px,py,pz = pickle.load(f).T
     ntuple_sample = ntuple_df.sample(n=N, random_state=42).reset_index(drop=True)
     #ntuple_sample['px'] = px

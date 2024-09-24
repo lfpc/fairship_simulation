@@ -129,9 +129,9 @@ class SHIPRunner(object):
         if not n_events: n_events = MuonBackgen.GetNevents()
         else: n_events = min(n_events, MuonBackgen.GetNevents())
 
-        output_file = os.path.join(self.output_dir, f"ship_sim.MuonBack-TGeant4_{self.tag}.root")
-        param_file = os.path.join(self.output_dir, f"params_ship.MuonBack-TGeant4_{self.tag}.root")
-        geofile_output = os.path.join(self.output_dir,f"geometry_ship.MuonBack-TGeant4_{self.tag}.root")
+        output_file = os.path.join(self.output_dir, f"ship_sim_{self.tag}.root")
+        param_file = os.path.join(self.output_dir, f"params_ship_{self.tag}.root")
+        geofile_output = os.path.join(self.output_dir,f"geometry_ship_{self.tag}.root")
 
         run.SetSink(ROOT.FairRootFileSink(output_file))
 

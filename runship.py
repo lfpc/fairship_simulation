@@ -155,7 +155,7 @@ class SHIPRunner(object):
         if display:
             self.display(ship_geo)
             
-        if hasattr(ship_geo.Bfield, "fieldMap"):
+        if False:#hasattr(ship_geo.Bfield, "fieldMap"):
             fieldMaker = geomGeant4.addVMCFields(ship_geo, '', True)
         if plot_field:    
             fieldMaker.plotField(1, ROOT.TVector3(-9000.0, 6000.0, 50.0), ROOT.TVector3(-300.0, 300.0, 6.0), os.path.join(self.output_dir, 'Bzx.png'))
@@ -387,7 +387,7 @@ def extract_l_and_w(magnet_geofile, full_geometry_file, run=None):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--n", type=int, default=100)
+    parser.add_argument("--n", type=int, default=0)
     parser.add_argument("--file", type=str, default='./samples/subsample.root')
     parser.add_argument("--shield_design", type=int, default=None)
     parser.add_argument("--tag", type=str, default='test')

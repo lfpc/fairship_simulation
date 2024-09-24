@@ -100,8 +100,8 @@ class SHIPRunner(object):
 
         ROOT.gRandom.SetSeed(self.theSeed)
         shipRoot_conf.configure(0)
-        ship_geo = ConfigRegistry.loadpy("$FAIRSHIP/geometry/geometry_config.py", Yheight = globalDesigns[self.design]['dy'], tankDesign = globalDesigns[self.design]['dv'],
-                                                muShieldDesign = self.shield_design, nuTauTargetDesign=globalDesigns[self.design]['nud'], 
+        ship_geo = ConfigRegistry.loadpy("$FAIRSHIP/geometry/geometry_config.py", Yheight = globalDesigns[self.design]['dy'],# tankDesign = globalDesigns[self.design]['dv'],
+                                                muShieldDesign = self.shield_design,# nuTauTargetDesign=globalDesigns[self.design]['nud'], 
                                                 muShieldGeo=self.shield_geo_file,
                                                 #CaloDesign=globalDesigns[self.design]['caloDesign'], strawDesign=globalDesigns[self.design]['strawDesign'],
                                                 muShieldStepGeo=self.step_geo, muShieldWithCobaltMagnet=0,

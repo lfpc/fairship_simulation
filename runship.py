@@ -398,7 +398,7 @@ if __name__ == '__main__':
     parser.add_argument("--sameSeed", action='store_true')
     parser.add_argument("--full_geometry", dest = 'only_muonshield',action='store_false')
     parser.add_argument("--remove_veto", dest = 'veto',action='store_false')
-    parser.add_argument("--hits_only", dest = 'veto',action='store_true')
+    parser.add_argument("--hits_only",action='store_true')
     parser.add_argument("--seed", type=int, default=1)
     parser.add_argument("--keep_empty",dest='remove_empty', action='store_false')
     args = parser.parse_args()

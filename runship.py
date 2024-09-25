@@ -59,7 +59,8 @@ class SHIPRunner(object):
                  seed:int = 1,
                  sc_name = 'sc_v6',
                  only_muonshield:bool = True,
-                 veto = True):
+                 veto = True,
+                 SC_mag = True):
 
         if shield_design is None: shield_design = globalDesigns[design]['ds']
         self.shield_design = shield_design
@@ -82,6 +83,7 @@ class SHIPRunner(object):
 
         self.only_muonshield = only_muonshield
         self.veto =veto
+        self.SC_mag = SC_mag
 
 
     def run_ship(self, n_events=0, 
@@ -105,7 +107,7 @@ class SHIPRunner(object):
                                                 muShieldGeo=self.shield_geo_file,
                                                 CaloDesign=globalDesigns[self.design]['caloDesign'], strawDesign=globalDesigns[self.design]['strawDesign'],
                                                 muShieldStepGeo=self.step_geo, muShieldWithCobaltMagnet=0,
-                                                SC_mag=True, scName=self.sc_name, decayVolumeMedium="vacuums")
+                                                SC_mag=self.SC_mag, scName=self.sc_name, decayVolumeMedium="vacuums")
 
         run = ROOT.FairRunSim()
         run.SetName("TGeant4")  # Transport engine

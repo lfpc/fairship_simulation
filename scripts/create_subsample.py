@@ -10,7 +10,7 @@ PROJECTS_DIR = getenv("PROJECTS_DIR")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--n", type=int,default = 50000)
-parser.add_argument("--f", type=str, default = f"{PROJECTS_DIR}/fairship_simulation/samples/oliver_sample.root")
+parser.add_argument("--f", type=str, default = f"{PROJECTS_DIR}/fairship_simulation/samples/old_sample.root")
 parser.add_argument("--o", type=str, default = f"{PROJECTS_DIR}/fairship_simulation/samples/subsample.root")
 parser.add_argument("--x", type=float,default = None)
 parser.add_argument("--y", type=float,default = None)
@@ -23,7 +23,7 @@ def main(input, N:int, output):
     ntuple = root_file["pythia8-Geant4"]
     ntuple_df = ntuple.arrays(library="pd")
     if args.enriched:
-        with gzip.open('../samples/full_sample_old.pkl', 'rb') as f:
+        with gzip.open('../samples/oliver_data_enriched.pkl', 'rb') as f:
             px,py,pz = pickle.load(f).T
     ntuple_sample = ntuple_df.sample(n=N, random_state=42).reset_index(drop=True)
     #ntuple_sample['px'] = px

@@ -60,5 +60,5 @@ def main(input, N:int, output):
     return ntuple_sample
 
 if __name__ == '__main__':
-    df = main(args.f,args.N,args.o)
+    df = main(args.f,args.n,args.o)
     print(df.head())

@@ -22,9 +22,9 @@ def main(input, N:int, output):
     root_file = uproot.open(input)
     ntuple = root_file["pythia8-Geant4"]
     ntuple_df = ntuple.arrays(library="pd")
-    #if args.enriched:
-    #    with gzip.open('../samples/oliver_data_enriched.pkl', 'rb') as f:
-    #        px,py,pz = pickle.load(f).T
+    if args.enriched:
+        with gzip.open('../samples/full_sample_old.pkl', 'rb') as f:
+            px,py,pz = pickle.load(f).T
     ntuple_sample = ntuple_df.sample(n=N, random_state=42).reset_index(drop=True)
     #ntuple_sample['px'] = px
     #ntuple_sample['py'] = py
@@ -46,12 +46,12 @@ def main(input, N:int, output):
                 value = args.x
             elif column in ['y','oy'] and args.y is not None:
                 value = args.y
-            #elif column in ['pz','opz'] and args.enriched:
-            #    value = pz[i]
-            #elif column in ['px','opx',] and args.enriched:
-            #    value = px[i]
-            #elif column in ['py','opy'] and args.enriched:
-            #    value = py[i]
+            elif column in ['pz','opz'] and args.enriched:
+                value = pz[i]
+            elif column in ['px','opx',] and args.enriched:
+                value = px[i]
+            elif column in ['py','opy'] and args.enriched:
+                value = py[i]
             else: value = ntuple_sample[column].iloc[i]
             branches[column][0] = value
         new_ntuple.Fill()

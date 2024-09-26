@@ -128,8 +128,8 @@ class SHIPRunner(object):
         if self.same_seed: MuonBackgen.SetSameSeed(self.same_seed)
 
         primGen.AddGenerator(MuonBackgen)
-        if not n_events: n_events = MuonBackgen.GetNevents()
-        else: n_events = min(n_events, MuonBackgen.GetNevents())
+        if not n_events: n_events = MuonBackgen.GetNevents()-1
+        else: n_events = min(n_events, MuonBackgen.GetNevents()-1)
 
         output_file = os.path.join(self.output_dir, f"ship_sim_{self.tag}.root")
         param_file = os.path.join(self.output_dir, f"params_ship_{self.tag}.root")

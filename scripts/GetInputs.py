@@ -43,7 +43,7 @@ def process_file(filename, tracker_ends=None, epsilon=1e-9, debug=False,
                     hit.GetPz(),
                     hit.GetStartX()/100,
                     hit.GetStartY()/100,
-                    (hit.GetStartZ()+5652)/100,
+                    (hit.GetStartZ())/100,
                     hit.GetPdgCode()/(-13)
                 ]
                 muons_stats.append(muon)

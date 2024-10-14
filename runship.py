@@ -60,7 +60,8 @@ class SHIPRunner(object):
                  sc_name = 'sc_v6',
                  only_muonshield:bool = True,
                  veto = True,
-                 SC_mag = True):
+                 SC_mag = True,
+                 smearbeam = False):
 
         if shield_design is None: shield_design = globalDesigns[design]['ds']
         self.shield_design = shield_design
@@ -84,6 +85,7 @@ class SHIPRunner(object):
         self.only_muonshield = only_muonshield
         self.veto =veto
         self.SC_mag = SC_mag
+        self.smearbeam = smearbeam
 
 
     def run_ship(self, n_events=0, 
@@ -124,7 +126,8 @@ class SHIPRunner(object):
 
         MuonBackgen = ROOT.MuonBackGenerator()
         MuonBackgen.Init(self.input_file, first_event, phiRandom)
-        #MuonBackgen.SetSmearBeam(5 * u.cm) # radius of ring, thickness 8mm
+        if self.smearbeam:
+            MuonBackgen.SetSmearBeam(5 * u.cm) # radius of ring, thickness 8mm
         if self.same_seed: MuonBackgen.SetSameSeed(self.same_seed)
 
         primGen.AddGenerator(MuonBackgen)
@@ -401,9 +404,11 @@ if __name__ == '__main__':
     parser.add_argument("--hits_only",action='store_true')
     parser.add_argument("--seed", type=int, default=1)
     parser.add_argument("--keep_empty",dest='remove_empty', action='store_false')
+    parser.add_argument("--warm",dest='SC_mag', action='store_false')
+    parser.add_argument("--smear",action='store_true')
     args = parser.parse_args()
-    ship = SHIPRunner(args.tag,input_file = args.file,shield_design=args.shield_design,
+    ship = SHIPRunner(args.tag,SC_mag=args.SC_mag,input_file = args.file,shield_design=args.shield_design,
                       seed = args.seed, same_seed = args.sameSeed, only_muonshield= args.only_muonshield, veto = args.veto,
-                      MCTracksWithHitsOnly=args.hits_only)
+                      MCTracksWithHitsOnly=args.hits_only, smearbeam= args.smear)
     _,d_time = ship.run_ship(args.n,first_event = args.i,return_time=True,plot_field=False, remove_empty_events=args.remove_empty)
     

@@ -64,6 +64,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     tag = 'test'
     filename = f'/afs/cern.ch/user/l/lcattela/SHIP/fairship_simulation/outputs/ship_sim_{tag}.root'
-    muons = process_file(filename,args.tracker)
+    tracker = (float(args.tracker[0]),float(args.tracker[1]))
+    muons = process_file(filename,tracker)
     with gzip.open(f'/afs/cern.ch/user/l/lcattela/SHIP/fairship_simulation/outputs/inputs_fairship.pkl', "wb") as f:
         pickle.dump(muons, f)

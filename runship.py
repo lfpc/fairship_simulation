@@ -46,6 +46,8 @@ globalDesigns = {
      }
 }
 
+N_CLUSTERS = 1024
+
 class SHIPRunner(object):
     def __init__(self, tag,
                  input_file,
@@ -116,9 +118,9 @@ class SHIPRunner(object):
         run.SetUserConfig('g4Config.C')
         run.SetMaterials("media.geo")
         #rtdb = run.GetRuntimeDb()
-        exclusion_list = shipDet_conf.LIST_WITHOUT_MUONSHIELD if self.only_muonshield else []
-        if not self.veto: exclusion_list.append('Veto')
-        modules = shipDet_conf.configure(run, ship_geo, exclusionList = exclusion_list)
+        #exclusion_list = shipDet_conf.LIST_WITHOUT_MUONSHIELD if self.only_muonshield else []
+        #if not self.veto: exclusion_list.append('Veto')
+        modules = shipDet_conf.configure(run, ship_geo)#, exclusionList = exclusion_list)
         primGen = ROOT.FairPrimaryGenerator()
         fileType = ut.checkFileExists(self.input_file)
         if fileType == 'tree': primGen.SetTarget(ship_geo.target.z0+70.845*u.m,0.)
@@ -131,8 +133,13 @@ class SHIPRunner(object):
         if self.same_seed: MuonBackgen.SetSameSeed(self.same_seed)
 
         primGen.AddGenerator(MuonBackgen)
-        if not n_events: n_events = MuonBackgen.GetNevents()-1
-        else: n_events = min(n_events, MuonBackgen.GetNevents()-1)
+        if args.id is None:
+            if not n_events: n_events = MuonBackgen.GetNevents()-1
+            else: n_events = min(n_events, MuonBackgen.GetNevents()-1)
+        else: 
+            n_events = MuonBackgen.GetNevents()/N_CLUSTERS
+            first_event = args.id*n_events
+
 
         output_file = os.path.join(self.output_dir, f"ship_sim_{self.tag}.root")
         param_file = os.path.join(self.output_dir, f"params_ship_{self.tag}.root")
@@ -204,7 +211,7 @@ class SHIPRunner(object):
         ship_geo = ConfigRegistry.loadpy("$FAIRSHIP/geometry/geometry_config.py", Yheight = globalDesigns[self.design]['dy'], tankDesign = globalDesigns[self.design]['dv'],
                                                 muShieldDesign = self.shield_design, nuTauTargetDesign=globalDesigns[self.design]['nud'], 
                                                 muShieldGeo=self.shield_geo_file,
-                                                #CaloDesign=globalDesigns[self.design]['caloDesign'], strawDesign=globalDesigns[self.design]['strawDesign'],
+                                                CaloDesign=globalDesigns[self.design]['caloDesign'], strawDesign=globalDesigns[self.design]['strawDesign'],
                                                 muShieldStepGeo=self.step_geo, muShieldWithCobaltMagnet=0,
                                                 SC_mag=True, scName=self.sc_name, decayVolumeMedium="vacuums")
 
@@ -393,11 +400,13 @@ def extract_l_and_w(magnet_geofile, full_geometry_file, run=None):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+
     parser.add_argument("--n", type=int, default=0)
-    parser.add_argument("--file", type=str, default='./samples/subsample.root')
-    parser.add_argument("--shield_design", type=int, default=None)
     parser.add_argument("--tag", type=str, default='test')
     parser.add_argument("--i", type=int, default=0)
+    parser.add_argument("--id", type=int, default=0)
+    parser.add_argument("--file", type=str, default='./samples/subsample.root')
+    parser.add_argument("--shield_design", type=int, default=None)
     parser.add_argument("--sameSeed", action='store_true')
     parser.add_argument("--full_geometry", dest = 'only_muonshield',action='store_false')
     parser.add_argument("--remove_veto", dest = 'veto',action='store_false')
@@ -407,6 +416,7 @@ if __name__ == '__main__':
     parser.add_argument("--warm",dest='SC_mag', action='store_false')
     parser.add_argument("--smear",action='store_true')
     args = parser.parse_args()
+
     ship = SHIPRunner(args.tag,SC_mag=args.SC_mag,input_file = args.file,shield_design=args.shield_design,
                       seed = args.seed, same_seed = args.sameSeed, only_muonshield= args.only_muonshield, veto = args.veto,
                       MCTracksWithHitsOnly=args.hits_only, smearbeam= args.smear)
